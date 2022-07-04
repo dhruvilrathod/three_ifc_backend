@@ -88,4 +88,4 @@ app.post('/api/upload', upload, (req, res) => {
     }
 });
 
-app.listen(process.env.PORT || 3000, () => console.log(`app listening on port ${port}!`));
+app.listen(process.env.PORT || 3000, () => console.log(`App started!`));
