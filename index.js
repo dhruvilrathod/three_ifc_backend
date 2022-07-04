@@ -70,27 +70,6 @@ app.get('/api/file', (req, res) => {
     if (fs.existsSync('uploads/' + filename)) {
         res.sendFile(__dirname + '/uploads/' + filename);
     }
-})
-
-
-
-app.get('/api/upload', (req, res) => {
-    console.log('route called');
-    x = req.query.value;
-    console.log(x);
-    res.json({
-        'message': x
-    });
-});
-
-app.get('/api/delete', async (req, res) => {
-    if (fs.existsSync('uploads/' + req.query.filename)) {
-        var deleted = await unlinkAsync('uploads/' + req.query.filename);
-        res.send(deleted);
-    }
-    else {
-        res.send('No file found');
-    }
 });
 
 app.post('/api/upload', upload, (req, res) => {
@@ -109,9 +88,5 @@ app.post('/api/upload', upload, (req, res) => {
         res.send({ file: req.file, client: clientId });
     }
 });
-
-// app.post('/api/upload', upload, (req, res) => {
-//     console.log(req.file);
-// });
 
 app.listen(port, () => console.log(`app listening on port ${port}!`));
