@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
-const port = 3000 || process.env.PORT;
 const cors = require('cors');
 const fs = require('fs')
 const { promisify } = require('util')
@@ -89,4 +88,4 @@ app.post('/api/upload', upload, (req, res) => {
     }
 });
 
-app.listen(port, () => console.log(`app listening on port ${port}!`));
+app.listen(process.env.PORT || 3000, () => console.log(`app listening on port ${port}!`));
