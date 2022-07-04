@@ -72,6 +72,7 @@ app.get('/api/file', (req, res) => {
 });
 
 app.post('/api/upload', upload, (req, res) => {
+    console.log('post route called');
     console.log(req.file);
     if (!req.file) {
         console.log("No file received");
