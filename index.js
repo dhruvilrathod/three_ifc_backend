@@ -28,35 +28,49 @@ app.use(cors({
     origin: '*'
 }));
 
-let clients = [];
+var clients = [];
+var files = [];
 
 app.get('/status', (request, response) => response.json({ clients: clients.length }));
 
-function eventsHandler(request, response, next) {
+function eventsHandler(req, res, next) {
+    var link = req.query.filename;
+    var clientId = req.query.clientId;
+    console.log('from events: ', link, clientId);
     const headers = {
         'Content-Type': 'text/event-stream',
         'Connection': 'keep-alive',
         'Cache-Control': 'no-cache'
     };
-    response.writeHead(200, headers);
-    const data = `data: data123`;
-    response.write(data);
-    const clientId = Date.now();
-    const newClient = {
-        id: clientId,
-        file:
-            response
-    };
-    clients.push(newClient);
-    request.on('close', () => {
+    res.writeHead(200, headers);
+    res.write('hello');
+    req.on('close', () => {
         console.log(`${clientId} Connection closed`);
-        clients = clients.filter(client => client.id !== clientId);
+        clients.map(async (client, i) => {
+            if (client.id == clientId) {
+                clients.splice(i, 1);
+                if (fs.existsSync('uploads/' + link)) {
+                    var deleted = await unlinkAsync('uploads/' + link);
+                    res.send(deleted);
+                }
+                else {
+                    res.send('No file found');
+                }
+            }
+        });
     });
 }
 
-app.get('/events', upload, eventsHandler, (req, res) => {
-    console.log('hllo');
-});
+app.get('/events', upload, eventsHandler);
+
+app.get('/api/file', (req, res) => {
+    var filename = req.query.filename;
+    var originalname = req.query.originalname;
+    res.setHeader('Content-Disposition', 'attachment; filename=' + originalname);
+    if (fs.existsSync('uploads/' + filename)) {
+        res.sendFile(__dirname + '/uploads/' + filename);
+    }
+})
 
 
 
@@ -79,17 +93,25 @@ app.get('/api/delete', async (req, res) => {
     }
 });
 
-app.post('/api/upload', upload, eventsHandler, (req, res) => {
-    console.log('route called 1');
+app.post('/api/upload', upload, (req, res) => {
+    console.log(req.file);
     if (!req.file) {
         console.log("No file received");
-        return res.send({
-            success: false
-        });
+        res.send("No file received");
     } else {
-        console.log('file received');
-        return res.send(req.file);
+        const clientId = Date.now();
+        const newClient = {
+            id: clientId,
+            file: req.file.filename,
+            res
+        };
+        clients.push(newClient);
+        res.send({ file: req.file, client: clientId });
     }
 });
+
+// app.post('/api/upload', upload, (req, res) => {
+//     console.log(req.file);
+// });
 
 app.listen(port, () => console.log(`app listening on port ${port}!`));
