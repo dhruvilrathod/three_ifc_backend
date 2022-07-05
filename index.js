@@ -43,7 +43,7 @@ function eventsHandler(req, res, next) {
     };
     res.writeHead(200, headers);
     setInterval(() => {
-        res.write('hello');        
+        res.status(200);
     }, 1000);
     req.on('close', () => {
         console.log(`${clientId} Connection closed`);
