@@ -40,9 +40,10 @@ function eventsHandler(req, res, next) {
         'Cache-Control': 'no-cache'
     };
     res.writeHead(200, headers);
-    setInterval(() => {
-        res.status(200);
-    }, 1000);
+    res.write('hello');
+    // setInterval(() => {
+    //     res.status(200);
+    // }, 1000);
     req.on('close', () => {
         console.log(`${clientId} Connection closed`);
         clients.map(async (client, i) => {
