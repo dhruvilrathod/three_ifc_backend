@@ -23,9 +23,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-app.use(cors({
-    origin: '*'
-}));
+app.use(cors());
 
 var clients = [];
 var files = [];
