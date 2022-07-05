@@ -45,16 +45,17 @@ function eventsHandler(req, res, next) {
     //     res.status(200);
     // }, 1000);
     req.on('close', () => {
-        console.log(`${clientId} Connection closed`);
         clients.map(async (client, i) => {
             if (client.id == clientId) {
                 clients.splice(i, 1);
                 if (fs.existsSync('uploads/' + link)) {
                     var deleted = await unlinkAsync('uploads/' + link);
                     res.send(deleted);
+                    console.log(`${clientId} Connection closed`);
                 }
                 else {
                     res.send('No file found');
+                    console.log(`${clientId} Connection closed`);
                 }
             }
         });
