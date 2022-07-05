@@ -40,10 +40,10 @@ function eventsHandler(req, res, next) {
         'Cache-Control': 'no-cache'
     };
     res.writeHead(200, headers);
-    res.write('hello');
-    // setInterval(() => {
-    //     res.status(200);
-    // }, 1000);
+    // res.write('hello');
+    setInterval(() => {
+        res.write('a');
+    }, 1000);
     req.on('close', () => {
         clients.map(async (client, i) => {
             if (client.id == clientId) {
