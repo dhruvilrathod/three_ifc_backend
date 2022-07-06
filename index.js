@@ -64,6 +64,32 @@ function eventsHandler(req, res, next) {
 
 app.get('/events', upload, eventsHandler);
 
+app.get('/error', (req, res) => {
+    console.log('error called');
+    var link = req.query.filename;
+    console.log('link: ', link);
+    var clientId = req.query.clientId;
+    console.log('id: ', clientId);
+    console.log(clients);
+    clients.map((d) => {
+        console.log(d.id, d.file);
+    })
+    clients.map(async (client, i) => {
+        if (client.id == clientId) {
+            clients.splice(i, 1);
+            if (fs.existsSync('uploads/' + link)) {
+                var deleted = await unlinkAsync('uploads/' + link);
+                res.send(deleted);
+                console.log(`${clientId} Connection closed`);
+            }
+            else {
+                res.send('No file found');
+                console.log(`${clientId} Connection closed`);
+            }
+        }
+    });
+})
+
 app.get('/api/file', (req, res) => {
     var filename = req.query.filename;
     var originalname = req.query.originalname;
