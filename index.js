@@ -65,12 +65,8 @@ function eventsHandler(req, res, next) {
 app.get('/events', upload, eventsHandler);
 
 app.get('/error', (req, res) => {
-    console.log('error called');
     var link = req.query.filename;
-    console.log('link: ', link);
     var clientId = req.query.clientId;
-    console.log('id: ', clientId);
-    console.log(clients);
     clients.map((d) => {
         console.log(d.id, d.file);
     })
